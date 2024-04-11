@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 
 # Создаем базовый класс для ORM.
@@ -11,6 +12,7 @@ class User(Base):
 
 	id = Column(Integer, primary_key=True)
 	tg_id = Column(Integer, unique=True)
+	created = Column(DateTime, default=func.now())
 
 
 	@classmethod
@@ -26,3 +28,18 @@ class User(Base):
 			session.commit()
 			print("Пользователь успешно зарегистрирован.")
 			return new_user
+
+
+	@classmethod
+	def get_num_registered_users_today(cls, session):
+		"""Возвращаем количество зарегестрированных пользователей за сегодня в боте."""
+		today = func.current_date()
+		num_registered_users_today = session.query(func.count(cls.id)).filter(func.DATE(cls.created) == today).scalar()
+		return num_registered_users_today
+
+
+	@classmethod
+	def get_total_number_users(cls, session):
+		"""Возвращает общее количество зарегистрированных пользователей."""
+		total_users = session.query(func.count(cls.id)).scalar()
+		return total_users

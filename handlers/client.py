@@ -12,7 +12,7 @@ async def start_cmd(message: Message):
 	# Регистрируем пользоавтеля если он еще не зарегестрирован.
 	User.register_user(session, tg_id=message.from_user.id)
 
-	await message.answer(f'Привет, {message.from_user.first_name}!\n\nПожалуйста, убедитесь, что вы прочитали <a href="https://telegra.ph/Instrukciya-04-10-35">инструкцию</a> по использованию бота! Используя бота, вы автоматически соглашаетесь с политикой конфиденциальности.', parse_mode="HTML", disable_web_page_preview=True, reply_markup=client_kb.menu_kb)
+	await message.answer(f'Привет, {message.from_user.first_name}!\n\nПожалуйста, убедитесь, что вы прочитали <a href="https://telegra.ph/Instrukciya-04-10-35">инструкцию</a> по использованию бота! Используя бота, вы автоматически соглашаетесь с политикой конфиденциальности.', parse_mode="HTML", disable_web_page_preview=True, reply_markup=client_kb.MenuKB.menu_kb)
 
 
 async def earn_cmd(message: Message):
@@ -32,7 +32,7 @@ async def useful_links_cmd(message: Message):
 
 async def my_office_cmd(message: Message):
 	"""Команда на текст Мой кабинет."""
-	await message.answer("Кабинет.")
+	await message.answer(f"👨‍💻 Ваш кабинет:\n\n🔑 Мой ID: {message.from_user.id}\n💰 Баланс: 0 Narekcoin")
 
 
 async def subs_check_cmd(message: Message):
@@ -42,12 +42,14 @@ async def subs_check_cmd(message: Message):
 
 async def our_bots_and_statistics_cmd(message: Message):
 	"""Команда на текст Наши боты / Статистика."""
-	await message.answer("Статистика.")
+	num_registered_users_today = User.get_num_registered_users_today(session)
+	total_users = User.get_total_number_users(session)
+	await message.answer(f"📊 Статистика бота\n\n👤 Общее количество пользователей: {total_users}\n🆕 Новых сегодня: {num_registered_users_today}")
 
 
 async def instructions_cmd(message: Message):
 	"""Команда на текст Инструкция."""
-	await message.answer("Инструкция.")
+	await message.answer("Инструкция по использованию Narekbot", reply_markup=client_kb.InstructionKB.instruction_kb.as_markup())
 
 
 
